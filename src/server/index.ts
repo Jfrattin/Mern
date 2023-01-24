@@ -1,0 +1,50 @@
+import express, { Express, Request, Response } from "express";
+
+
+// Env
+import dotenv from 'dotenv';
+
+// Security 
+import cors from 'cors';
+import helmet from "helmet";
+
+// TODO HTTPS 
+
+//Root Router 
+import rootRuter from "../routes";
+
+//configuration env
+dotenv.config();
+
+//Create express APP
+const server: Express = express();
+
+//Define SERVER to use "/api"
+//From  this point onover: http://localhost:8000/api/...
+
+server.use(
+        '/api',
+        rootRuter
+);
+
+// TODO mongose CONECCTION
+
+
+//Security server
+
+server.use(helmet());
+server.use(cors());
+
+//Contect types limite de 50mb 
+
+server.use(express.urlencoded({extended:true , limit: '50mb'}));
+server.use(express.json({limit:'50mb'}));
+
+// *Redirections
+// https:localhost8000/ --> API http://localhost:8000/api/
+
+server.get('/',  (req:Request, res:Response ) => {
+    res.redirect('/api');
+})
+
+export default server; 

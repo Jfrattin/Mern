@@ -16,3 +16,7 @@
     message: string
  }
 
+ export type BasicgoodbyeResponse = {
+   message: string;
+   date: string;
+}
