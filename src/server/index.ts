@@ -27,6 +27,10 @@ server.use(
         rootRuter
 );
 
+//Static Server
+
+server.use(express.static('public'));
+
 // TODO mongose CONECCTION
 
 
