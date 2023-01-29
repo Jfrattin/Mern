@@ -1,5 +1,5 @@
 import express, { Express, Request, Response } from "express";
-
+import mongoose from "mongoose";
 
 // Env
 import dotenv from 'dotenv';
@@ -12,6 +12,7 @@ import helmet from "helmet";
 
 //Root Router 
 import rootRuter from "../routes";
+
 
 //configuration env
 dotenv.config();
@@ -32,7 +33,7 @@ server.use(
 server.use(express.static('public'));
 
 // TODO mongose CONECCTION
-
+mongoose.connect('mongodo://localhost:27017/codeverification')
 
 //Security server
 
