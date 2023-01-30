@@ -1,44 +1,57 @@
 import express, { Express, Request, Response } from "express";
+import mongoose from "mongoose";
 
+// Env
+import dotenv from 'dotenv';
 
-// Security
+// Security 
 import cors from 'cors';
-import helmet from 'helmet';
+import helmet from "helmet";
 
-// TODO: HTTPS
+// TODO HTTPS 
 
-// Root Router
-import rootRuter from '../routes';
+//Root Router 
+import rootRuter from "../routes";
 
-// * Create Express APP
+
+//configuration env
+dotenv.config();
+
+//Create express APP
 const server: Express = express();
 
-// * Define SERVER to use "/api" and use rootRouter from 'index.ts' in routes
-// From this point onover: http://localhost:8000/api/...
+//Define SERVER to use "/api"
+//From  this point onover: http://localhost:8000/api/...
+
 server.use(
-    '/api',
-    rootRuter
-    );
+        '/api',
+        rootRuter
+);
 
+//Static Server
 
-// Static server
 server.use(express.static('public'));
+mongoose.set('strictQuery', true);
+// TODO: mongose CONECCTION
+mongoose.connect("mongodb://localhost:27017/Coderverification")
 
-// TODO: Mongoose Connection
+//Security server
 
-// * Security Config
 server.use(helmet());
 server.use(cors());
 
-// * Content Type Config
-server.use(express.urlencoded({ extended: true, limit: '50mb' }));
-server.use(express.json({limit: '50mb'}));
+//Contect types limite de 50mb 
 
-// * Redirection Config
-// http://localhost:8000/ --> http://localhost:8000/api/
-server.get('/', (req: Request, res: Response) => {
+server.use(express.urlencoded({extended:true , limit: '50mb'}));
+server.use(express.json({limit:'50mb'}));
+
+// *Redirections
+// https:localhost8000/ --> API http://localhost:8000/api/
+
+server.get('/',  (req:Request, res:Response ) => {
     res.redirect('/api');
-});
+})
 
-export default server;
+export default server; 
+
 
