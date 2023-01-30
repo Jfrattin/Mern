@@ -1,16 +1,16 @@
-
-export const LogInfo = (messange: string ) => {
-    console.log(`Info: ${messange}`);
+export const LogInfo = (message: string) => {
+    console.log(`Info: ${message}`);
 }
 
-export const LogSuccess = (messange: string ) => {
-    console.log(`Succes: ${messange}`);
+export const LogSuccess = (message: string) => {
+    console.log(`Success: ${message}`);
 }
 
-export const LogError = (messange: string ) => {
-    console.log(`Error: ${messange}`);
+export const LogWarning = (message: string) => {
+    console.log(`Warning: ${message}`);
 }
 
-export const LogWarning = (messange: string ) => {
-    console.log(`Warning: ${messange}`);
+export const LogError = (message: string) => {
+    console.log(`Error: ${message}`);
 }
+

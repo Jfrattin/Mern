@@ -1,29 +1,32 @@
-/*
-*Root Router
-*Redirection to Routers
-*/ 
+/**
+ * Root Router
+ * Redirections to Routers
+ */
 
-import express, {Request, Response} from "express";
-import HelloRouter from "./HelloRouter";
-import { LogInfo} from "../utils/logger";
-import GoodbyeRouter from "./GoodbyeRouter";
+import express, { Request, Response } from 'express';
+import helloRouter from './HelloRouter';
+import { LogInfo } from '../utils/logger';
 
-//* server instance
+// Server instance
 let server = express();
 
-//Router instance 
+// Router instance
 let rootRouter = express.Router();
 
-//get: http://localhost:8000/api/
+
+// Activate for requests to http://localhost:8000/api
+
+// GET: http://localhost:8000/api/
 rootRouter.get('/', (req: Request, res: Response) => {
-    LogInfo('GET: http://localhost:8000/api');
-    
-    res.send('welcome a mi API Restfull: Express + TS + Nodemon + Jest + Swagger + Mongoose');
+    LogInfo('GET: http://localhost:8000/api/')
+    // Send Hello World
+    res.send('Welcome to my API Restful: Express + TS + Nodemon + Jest + Swagger + Mongoose');
 });
 
-//Redirection routes and controllers 
-server.use('/', rootRouter);  //http://localhost:8000/api/
-server.use('/hello', HelloRouter); //http://localhost:8000/api/hello --> helloRouter 
-server.use('/goodbye', GoodbyeRouter); //http://localhost:8000/api/goodbye --> goodbyeRouter 
+
+// Redirections to Routers & Controllers
+server.use('/', rootRouter); // http://localhost:8000/api/
+server.use('/hello', helloRouter); // http://localhost:8000/api/hello --> HelloRouter
+// Add more routes to the app
 
 export default server;
