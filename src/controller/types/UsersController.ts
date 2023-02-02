@@ -1,10 +1,10 @@
-import {Get, Query, Route, Tags} from "tsoa";
+import {Get, Query, Route, Tags, Delete, Post} from "tsoa";
 import { IUserController } from "../interfaces/index";
 import { LogSuccess, LogError } from "../../utils/logger";
 
 //ORM - Users 
 
-import { getAllUsers, getUsersByID } from "../../domain/orm/User.orm";
+import { getAllUsers, getUsersByID, deleteUserByID, createUser} from "../../domain/orm/User.orm";
 
 
 @Route("/api/users")
@@ -34,8 +34,46 @@ export class UserController implements IUserController {
       return response;
      
     }
-  }
+
+  
+  @Delete("/")
+  public async deleteUser(@Query()id?: string): Promise<any> { 
+     
+     let response: any = '';
+
+     //si existe el ID como @query devuelvo solo ese user
+     if(id){
+        LogSuccess( `[api/users] Get User by ID: ${id} ` );
+        deleteUserByID(id).then((r) => {
+        response = { 
+        message: `Remove the object ${id} to database`
+        }
+       });
+       }else{
+       LogSuccess('[api/users] Delete user Request');
+       response = { 
+        message: 'Please insert ID to remove in database'
+        }
+      }
+
+          return response
+   }
+   @Post("/") 
+   public async createUser(user:any): Promise<any> { 
+    let response: any = "";
+    await createUser(user).then((r)=>{
+      LogSuccess('[api/users] Create user Request');
+      response = { message: `User created: ${user.name}`}
+    });
+
+    return{
+      message: "Creating User"
+    }
+     return response;
     
+    }
+}
+
 
     
 
