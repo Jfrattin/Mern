@@ -5,5 +5,7 @@ export interface IHelloController {
 }
 
 export interface IUserController{
-    getUsers(): Promise<any>
+    //Leer todos los usuarios de la base de datos si tengo o no id 
+    getUsers(id?: string): Promise<any>
+
 }
