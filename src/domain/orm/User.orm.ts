@@ -64,3 +64,14 @@ export const createUser =async (user:any): Promise<any | undefined> => {
     
 }
 // - Update User By ID
+
+export const updateUserById = async (id:string ,user:any ) : Promise<any | undefined> => {
+
+    try{
+        //update user
+        return await usersModel.findByIdAndUpdate(id, user);
+
+    }catch(error){
+        LogError(`[ORM ERROR]: Updating User: ${user}:: {error}`)
+    }
+}

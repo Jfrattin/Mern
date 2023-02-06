@@ -34,41 +34,41 @@ usersRouter.route('/')
 
     })
 
+
+
     .post(async (req: Request, res: Response) => {
+        let nameq: any = req?.query?.name;
+        let emailq: any = req?.query?.email;
+        let ageq: any = req?.query?.age;
+       
+        let user = {
+              name: nameq|| "default mail",
+                email: emailq || "default email", 
+                age: ageq|| 18 }
+          
         const controller: UserController = new  UserController();
         // Obtain Reponse
+        let response: any = await controller.createUser(user);
+        // Send to the client the response
+        return res.send(response);
+
+    })
+    
+    .put(async (req: Request, res: Response) => {
+        // Obtain a Query Param
+        let id: any = req?.query?.id;
+        let nameq: any = req?.query?.name;
+        let emailq: any = req?.query?.email;
+        let ageq: any = req?.query?.age;
+        //Creating user default
         let user = {
-            name: "tino",
-            email: "tino@gmail.com",
-            age: "52"
-        }
-        let user1 = {
-            name: "tinos",
-            email: "tinos@gmail.com",
-            age: "52"
-        }
-        let user2 = {
-            name: "tino",
-            email: "tino@gmail.com",
-            age: "52"
-        }
-        let user3 = {
-            name: "tinu",
-            email: "tinu@gmail.com",
-            age: "52"
-        }
-        let user4 = {
-            name: "tine",
-            email: "tine@gmail.com",
-            age: "52"
-        }
-        let user5 = {
-            name: "tini",
-            email: "tini@gmail.com",
-            age: "52"
-        }
-        let response: any = await controller.createUser(user5);
-       
+            name: nameq|| "default mail",
+              email: emailq || "default email", 
+              age: ageq|| 18 }
+        LogInfo(`Query Param: ${id}`);
+        const controller: UserController = new  UserController();
+        // Obtain Reponse
+        const response: any = await controller.updateUser(id,user);
         // Send to the client the response
         return res.send(response);
 

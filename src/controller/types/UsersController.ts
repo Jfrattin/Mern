@@ -1,10 +1,10 @@
-import {Get, Query, Route, Tags, Delete, Post} from "tsoa";
+import {Get, Query, Route, Tags, Delete, Post, Put} from "tsoa";
 import { IUserController } from "../interfaces/index";
 import { LogSuccess, LogError } from "../../utils/logger";
 
 //ORM - Users 
 
-import { getAllUsers, getUsersByID, deleteUserByID, createUser} from "../../domain/orm/User.orm";
+import { getAllUsers, getUsersByID, deleteUserByID, createUser, updateUserById} from "../../domain/orm/User.orm";
 
 
 @Route("/api/users")
@@ -35,7 +35,6 @@ export class UserController implements IUserController {
      
     }
 
-  
   @Delete("/")
   public async deleteUser(@Query()id?: string): Promise<any> { 
      
@@ -72,7 +71,34 @@ export class UserController implements IUserController {
      return response;
     
     }
+
+  @Put("/")
+    public async updateUser(@Query()id:string, user:any): Promise<any> { 
+      let response: any = '';
+
+      //si existe el ID como @query devuelvo solo ese user
+      if(id){
+         LogSuccess( `[api/users] Update the object ${id} Updeta succesfully ` );
+         updateUserById(id, user).then((r) => {
+         response = { 
+         message: `Update the object ${id} to database`
+         }
+        });
+        }else{
+        LogSuccess('[api/users] Update user Request');
+        response = { 
+         message: 'Please insert ID from Update USer'
+         }
+       }
+ 
+           return response
+      }
+  
+
+
 }
+
+
 
 
     
