@@ -5,7 +5,8 @@ export const userEntity = () => {
         {
             name: String,
             email: String,
-            age: Number
+            age: Number,
+            password: String
         }
     )
     

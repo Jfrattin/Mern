@@ -44,7 +44,7 @@ server.use(cors());
 
 server.use(express.urlencoded({extended:true , limit: '50mb'}));
 server.use(express.json({limit:'50mb'}));
-
+ 
 // *Redirections
 // https:localhost8000/ --> API http://localhost:8000/api/
 

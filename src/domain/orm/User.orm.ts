@@ -1,6 +1,10 @@
 import { userEntity } from "../entities/User.entity";
-
+import  jwt from "jsonwebtoken";
 import { LogSuccess, LogError } from "../../utils/logger";
+import { IUser } from "../interfaces/IUser.interfaces";
+import { IAuth } from "../interfaces/IAuth.interfaces";
+//import bcrypt 
+import bcrypt from 'bcrypt';
 
 // CRUD
 
@@ -11,7 +15,7 @@ import { LogSuccess, LogError } from "../../utils/logger";
 let usersModel = userEntity();
 
 export const getAllUsers = async (): Promise<any[] | undefined> => {
-    try {
+    try {   
         
         // Search all users
         return await usersModel.find({isDelete:false});
@@ -29,6 +33,8 @@ export const getAllUsers = async (): Promise<any[] | undefined> => {
 
 
 export const getUsersByID = async (id:string): Promise<any | undefined> => {
+   
+
     try {
         
         // Search user by id
@@ -40,8 +46,12 @@ export const getUsersByID = async (id:string): Promise<any | undefined> => {
 }
 
 // - Get User By Email
+
+
 // - Delete User By ID
 export const deleteUserByID =async (id:string): Promise<any | undefined> => {  
+   
+
     try {    
             return await usersModel.deleteOne({ _id: id });
 
@@ -53,6 +63,8 @@ export const deleteUserByID =async (id:string): Promise<any | undefined> => {
 // - Create New User
 
 export const createUser =async (user:any): Promise<any | undefined> => {
+   
+
     try{
         //create inser new user
         return await usersModel.create(user);
@@ -66,6 +78,7 @@ export const createUser =async (user:any): Promise<any | undefined> => {
 // - Update User By ID
 
 export const updateUserById = async (id:string ,user:any ) : Promise<any | undefined> => {
+    
 
     try{
         //update user
@@ -75,3 +88,50 @@ export const updateUserById = async (id:string ,user:any ) : Promise<any | undef
         LogError(`[ORM ERROR]: Updating User: ${user}:: {error}`)
     }
 }
+// Login User
+
+export const loginUser = async (auth:IAuth) : Promise<any | undefined> => {
+    try {
+        
+        // Search user by email and execute
+        return await usersModel.findOne({email: auth.email}, (err:any, user:IUser)=>{
+                if(err){//TODO return error ERROR 500 
+                } 
+                if(!user){ //TODO return error user not found ERROR 404
+                }
+                let validPassword = bcrypt.compareSync(auth.password, user.password);
+                
+                if(!validPassword){
+                    // TODO --- > Not AUTHORIZED 401     
+                }
+
+                //CREATE JWT
+                //TODO secret  must be  in .inv
+                let token = jwt.sign({email: user.email},'SECRET',
+                {expiresIn:"2h"})
+                return token;
+                 } ); 
+       
+         } catch (error) {
+        LogError(`[ORM ERROR]: Getting User by ID: ${error}`);
+    }
+}
+
+
+// Register User
+
+export const registerUser = async (user: IUser) : Promise<any | undefined> => {
+    try{
+        //create inser new user
+        return await usersModel.create(user);
+    }catch(error){
+        LogError(`[ORM ERROR]: Register User: ${error}`);
+    }
+
+
+}
+
+//Logout User
+export const logoutUser = async (user:IUser ) : Promise<any | undefined> => {
+}
+

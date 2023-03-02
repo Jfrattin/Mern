@@ -17,7 +17,9 @@ export class UserController implements IUserController {
      * endpoint para obtener los users de la coleccion de la base de datos 
      * 
      **/
-    
+
+
+
 @Get("/")
    public async getUsers(@Query()id?: string): Promise<any> { 
       
@@ -43,11 +45,10 @@ export class UserController implements IUserController {
      //si existe el ID como @query devuelvo solo ese user
      if(id){
         LogSuccess( `[api/users] Get User by ID: ${id} ` );
-        deleteUserByID(id).then((r) => {
-        response = { 
-        message: `Remove the object ${id} to database`
-        }
-       });
+        deleteUserByID(id).then((r) => {});
+        response = { message: `Remove the object ${id} to database`
+      }
+       ;
        }else{
        LogSuccess('[api/users] Delete user Request');
        response = { 
@@ -62,8 +63,9 @@ export class UserController implements IUserController {
     let response: any = "";
     await createUser(user).then((r)=>{
       LogSuccess('[api/users] Create user Request');
-      response = { message: `User created: ${user.name}`}
-    });
+      response = { message: `User createdit: ${user.name}`};
+    })
+    ;
 
    
      return response;
@@ -77,12 +79,10 @@ export class UserController implements IUserController {
       //si existe el ID como @query devuelvo solo ese user
       if(id){
          LogSuccess( `[api/users] Update the object ${id} Update succesfully ` );
-         updateUserById(id, user).then((r) => {
-         response = {  message: `Update the object ${id} to database`}
-         ;
-        });
+         updateUserById(id, user);
+         response = {  message: `Update the object ${id} to database`};
         }else{
-        LogSuccess('[api/users] Update user Request');
+        LogSuccess('[api/users] Updat user Request');
         response = { 
          message: 'Please insert ID from Update USer'
          }
