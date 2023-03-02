@@ -65,9 +65,7 @@ export class UserController implements IUserController {
       response = { message: `User created: ${user.name}`}
     });
 
-    return{
-      message: "Creating User"
-    }
+   
      return response;
     
     }
@@ -78,11 +76,10 @@ export class UserController implements IUserController {
 
       //si existe el ID como @query devuelvo solo ese user
       if(id){
-         LogSuccess( `[api/users] Update the object ${id} Updeta succesfully ` );
+         LogSuccess( `[api/users] Update the object ${id} Update succesfully ` );
          updateUserById(id, user).then((r) => {
-         response = { 
-         message: `Update the object ${id} to database`
-         }
+         response = {  message: `Update the object ${id} to database`}
+         ;
         });
         }else{
         LogSuccess('[api/users] Update user Request');
@@ -91,8 +88,9 @@ export class UserController implements IUserController {
          }
        }
  
-           return response
-      }
+      return response
+      
+    }
   
 
 
