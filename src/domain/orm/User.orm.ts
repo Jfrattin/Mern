@@ -1,10 +1,13 @@
 import { userEntity } from "../entities/User.entity";
 import  jwt from "jsonwebtoken";
 import { LogSuccess, LogError } from "../../utils/logger";
+//impor Iuser // IAuth
 import { IUser } from "../interfaces/IUser.interfaces";
 import { IAuth } from "../interfaces/IAuth.interfaces";
 //import bcrypt 
 import bcrypt from 'bcrypt';
+//import .env
+import dotenv from 'dotenv';
 
 // CRUD
 
@@ -13,6 +16,11 @@ import bcrypt from 'bcrypt';
  */
 //initial  User models
 let usersModel = userEntity();
+
+//Configuration  of env
+dotenv.config();
+//Obtain Secret key to generate JWT
+const  secret = process.env.SECRETKEY || 'MYSECRETKEY';
 
 export const getAllUsers = async (): Promise<any[] | undefined> => {
     try {   
@@ -90,36 +98,47 @@ export const updateUserById = async (id:string ,user:any ) : Promise<any | undef
 }
 // Login User
 
-export const loginUser = async (auth:IAuth) : Promise<any | undefined> => {
+export const LoginUser = async (auth: IAuth): Promise<any | undefined> => {
     try {
         
-        // Search user by email and execute
-        return await usersModel.findOne({email: auth.email}, (err:any, user:IUser)=>{
-                if(err){//TODO return error ERROR 500 
-                } 
-                if(!user){ //TODO return error user not found ERROR 404
-                }
-                let validPassword = bcrypt.compareSync(auth.password, user.password);
-                
-                if(!validPassword){
-                    // TODO --- > Not AUTHORIZED 401     
-                }
+        let userModel = userEntity();
 
-                //CREATE JWT
-                //TODO secret  must be  in .inv
-                let token = jwt.sign({email: user.email},'SECRET',
-                {expiresIn:"2h"})
-                return token;
-                 } ); 
-       
-         } catch (error) {
-        LogError(`[ORM ERROR]: Getting User by ID: ${error}`);
+        let userFound: IUser | undefined = undefined;
+        let token = "0";
+
+        // Check if user exists by Unique Email
+        await userModel.findOne({email: auth.email}).then((user: IUser) => {
+            userFound = user;
+        }).catch((error) => {
+            console.error(`[ERROR Authentication in ORM]: User Not Found`);
+            throw new Error(`[ERROR Authentication in ORM]: User Not Found: ${error}`);
+        });
+
+        // Check if Password is Valid (compare with bcrypt)
+        let validPassword = bcrypt.compareSync(auth.password, userFound!.password);
+
+        if(!validPassword){
+            console.error(`[ERROR Authentication in ORM]: Password Not Valid`);
+            throw new Error(`[ERROR Authentication in ORM]: Password Not Valid`);
+        }else{   
+            token = jwt.sign({email: userFound!.email}, secret, {
+            expiresIn: "2h" });
+
+        return {
+            token: token,
+            user: userFound
+        }}
+
+        // Generate our JWT
+         
+
+    } catch (error) {
+        LogError(`[ORM ERROR]: Creating User: ${error}`);
     }
 }
 
 
 // Register User
-
 export const registerUser = async (user: IUser) : Promise<any | undefined> => {
     try{
         //create inser new user

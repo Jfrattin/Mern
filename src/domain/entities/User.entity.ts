@@ -3,13 +3,6 @@ import {IUser }  from "../interfaces/IUser.interfaces" ;
 
 export const userEntity = () => {
 
-    //let userSchema = new mongoose.Schema(
-      ///  {
-       //     name: String,
-         //   email: String,
-           // age: Number
-        //}
-    //)
     let userSchema = new mongoose.Schema<IUser>(
         {
             name: {type:  String, required:true },
@@ -20,6 +13,6 @@ export const userEntity = () => {
     )
     
 
-    return mongoose.model('users', userSchema) || mongoose.model<IUser>('Users',userSchema);
+    return mongoose.models.Users ||  mongoose.model<IUser>('Users', userSchema);
 
 }

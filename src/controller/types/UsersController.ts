@@ -44,10 +44,10 @@ export class UserController implements IUserController {
 
      //si existe el ID como @query devuelvo solo ese user
      if(id){
-        LogSuccess( `[api/users] Get User by ID: ${id} ` );
+
         deleteUserByID(id).then((r) => {});
-        response = { message: `Remove the object ${id} to database`
-      }
+        response = { message: `Remove the object ${id} to database`}
+        LogSuccess( `[api/users] Delete User by ID: ${id} ` );
        ;
        }else{
        LogSuccess('[api/users] Delete user Request');
@@ -56,14 +56,14 @@ export class UserController implements IUserController {
         }
       }
 
-          return response
+      return response
    }
    @Post("/") 
    public async createUser(user:any): Promise<any> { 
     let response: any = "";
     await createUser(user).then((r)=>{
       LogSuccess('[api/users] Create user Request');
-      response = { message: `User createdit: ${user.name}`};
+      response = { message: `User created: ${user.name}`};
     })
     ;
 

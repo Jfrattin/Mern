@@ -4,11 +4,6 @@ import express, { Request, Response } from "express";
 import { LogInfo } from "../utils/logger";
 
 
-
-//import Bcrypt for password
-
-import bcrypt from 'bcrypt';
-
 // Router from express
 let usersRouter = express.Router();
 
@@ -46,9 +41,7 @@ usersRouter.route('/')
         let ageq: any = req?.query?.age;
         
 
-        /* let nameb: any = req?.body?.name;
-
-        LogInfo(`### name is body: ${nameb}`); */
+        
 
         let user = {
               name: nameq|| "default mail",

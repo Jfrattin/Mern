@@ -5,25 +5,29 @@ import { LogInfo } from "../utils/logger";
 import  {IUser}  from "../domain/interfaces/IUser.interfaces";
 //Import Bcrypt 
 import bcrypt from "bcrypt"
+
 import { IAuth } from "../domain/interfaces/IAuth.interfaces";
+
+//import body parser  (Read json body in request)
+import bodyParser from "body-parser";
+
+
 //Router from express
 let authRouter=express.Router();
+
+//Middleware to read json request body
+let jsonParser = bodyParser.json();
+
 //Register
-authRouter.route('/auth/register')
-.post(async (req: Request, res: Response) => {
+authRouter.route('/register')
+.post(jsonParser, async (req: Request, res: Response) => {
     
-    let {name, email, password,age}= req.body;
+    let {name, email, password, age } = req?.body
     let  hashedPassword = '';
-    if(req.body.password && req.body.name &&req.body.email && req.body.age){
-        
-       // let name = req.body.name;
-        //let email = req.body.email;
-        //obtain  the password in request
-        //Encripter password 
+
+    if(name && password && email && age){
         hashedPassword = bcrypt.hashSync(req.body.password, 8);
-       //    let age = req.body.age;
-       //create User password cifrate
-       let newuser: IUser = {
+        let newuser: IUser = {
                     name: name,
                     email: email,
                     password: hashedPassword,
@@ -34,8 +38,11 @@ authRouter.route('/auth/register')
        // Obtain Reponse
        let response: any = await controller.RegisterUser(newuser);  
         // Send to the client the response
-        return res.status(201).send(response);    
+        return res.status(200).send(response);    
     }
+    else{ 
+        
+        return res.status(400).send(`[ERROR] User  data missing: Can user register `)}
 
 
     
@@ -45,30 +52,24 @@ authRouter.route('/auth/register')
 } )
 
 //Login
-authRouter.route('/auth/login')
-.post(async (req: Request, res: Response) => {
-    
-    let {email, password}= req.body;
+authRouter.route('/login')
+.post(jsonParser,async (req: Request, res: Response) => {
+    let {email, password}= req?.body;
     if(email && password ){
         
-        //TODO
        const controller: AuthController = new AuthController();
 
-       let Auth : IAuth = {
+       let auth : IAuth = {
         email: email,
         password:  password
        }
        // Obtain Reponse
-       let response: any = await controller.LoginUser(Auth);  
+       const response: any = await controller.LoginUser(auth);  
         // Send to the client the response
         return res.status(201).send(response);    
     }
-
-
-    
-    
-
-
+    else{ 
+        return res.status(400).send(`[ERROR] User  data missing: Can user Loggin `)}
 } )
 
 export default authRouter
