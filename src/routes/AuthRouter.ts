@@ -6,10 +6,13 @@ import  {IUser}  from "../domain/interfaces/IUser.interfaces";
 //Import Bcrypt 
 import bcrypt from "bcrypt"
 
+
+
 import { IAuth } from "../domain/interfaces/IAuth.interfaces";
 
 //import body parser  (Read json body in request)
 import bodyParser from "body-parser";
+import { verifyToken } from "../middlewares/verify.middlewares";
 
 
 //Router from express
@@ -71,5 +74,28 @@ authRouter.route('/login')
     else{ 
         return res.status(400).send(`[ERROR] User  data missing: Can user Loggin `)}
 } )
+
+//Route protected with JWT
+authRouter.route('/me')
+    .get(verifyToken, async (req: Request, res: Response)=>{
+        let id : any = req?.query?.id;
+
+        if(id){
+            //Controller: Auth controller
+            const controller: AuthController = new AuthController();
+            //obtain Response
+            let response: any = await controller.userData(id);
+            //if User it is authorised
+            return res.status(200).send(response);
+        }
+        else{
+            return res.status(401).send({
+                message: 'you are not authorised '
+            })
+        }
+
+    })
+
+
 
 export default authRouter

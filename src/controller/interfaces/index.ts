@@ -10,9 +10,7 @@ export interface IUserController{
     getUsers(id?: string): Promise<any>
     //Delete user by ID
     deleteUser(id?: string): Promise<any>
-    //Create user   
-    deleteUser(user: any): Promise<any>   
-    //Create user
+    //Update user   
     updateUser(id:string , user: any): Promise<any>
 }
 

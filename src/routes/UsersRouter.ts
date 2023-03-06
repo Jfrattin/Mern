@@ -34,27 +34,6 @@ usersRouter.route('/')
         return res.status(204).send(response);
 
     })
-
-    .post(async (req: Request, res: Response) => {
-        let nameq: any = req?.query?.name;
-        let emailq: any = req?.query?.email;
-        let ageq: any = req?.query?.age;
-        
-
-        
-
-        let user = {
-              name: nameq|| "default mail",
-                email: emailq || "default email", 
-                age: ageq|| 18 }
-          
-        const controller: UserController = new  UserController();
-        // Obtain Reponse
-        let response: any = await controller.createUser(user);
-        // Send to the client the response
-        return res.status(201).send(response);
-
-    })
     
     .put(async (req: Request, res: Response) => {
         // Obtain a Query Param

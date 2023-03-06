@@ -61,4 +61,39 @@ export class AuthController implements IAuthcontroller{
     //TODO Authenticate user and return JWT
     throw new Error("Method not implemented.");
     }
+ /**
+  * Endpoint te retreive the User in the collection "User"
+  * middleware: Validate JWT
+  * in your headers yoy must add the  X-acces-token wiht jwt valid
+  * @param {String}id  ID user to retreive 
+  * 
+  * @returns User found  ID params
+  */
+
+
+
+    @Get("/me")
+   public async userData(@Query()id?: string): Promise<any> { 
+      
+      let response: any = '';
+
+      //si existe el ID como @query devuelvo solo ese user
+      if(id){
+        LogSuccess( `[api/users] Get User Data by ID: ${id} ` );
+        response = await  getUsersByID(id);
+        //remove contraseña
+        response.password=''
+        }else{
+        LogSuccess('[api/users] Get All users Request');
+        response = await getAllUsers();    
+      }
+      return response;
+     
+    }
+
+
+
+   // @Post("/logout")     
+   
+
 }

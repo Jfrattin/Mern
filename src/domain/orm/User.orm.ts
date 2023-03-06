@@ -137,7 +137,6 @@ export const LoginUser = async (auth: IAuth): Promise<any | undefined> => {
     }
 }
 
-
 // Register User
 export const registerUser = async (user: IUser) : Promise<any | undefined> => {
     try{
