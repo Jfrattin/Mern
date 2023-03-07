@@ -82,10 +82,10 @@ export class AuthController implements IAuthcontroller{
         LogSuccess( `[api/users] Get User Data by ID: ${id} ` );
         response = await  getUsersByID(id);
         //remove contraseña
-        response.password=''
+        
         }else{
         LogSuccess('[api/users] Get All users Request');
-        response = await getAllUsers();    
+        //response = await getAllUsers();    
       }
       return response;
      

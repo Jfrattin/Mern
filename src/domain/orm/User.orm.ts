@@ -8,6 +8,7 @@ import { IAuth } from "../interfaces/IAuth.interfaces";
 import bcrypt from 'bcrypt';
 //import .env
 import dotenv from 'dotenv';
+//import { UsersResponse } from "../types/userResponse";
 
 // CRUD
 
@@ -15,18 +16,40 @@ import dotenv from 'dotenv';
  * Method to obtain all Users from Collection "Users" in Mongo Server
  */
 //initial  User models
-let usersModel = userEntity();
+
 
 //Configuration  of env
 dotenv.config();
 //Obtain Secret key to generate JWT
 const  secret = process.env.SECRETKEY || 'MYSECRETKEY';
 
-export const getAllUsers = async (): Promise<any[] | undefined> => {
+export const getAllUsers = async (page:number, limit:number): Promise<any[] | undefined> => {
     try {   
+        let usersModel = userEntity();
         
+        let response: any = {} ;
+       
         // Search all users
-        return await usersModel.find({isDelete:false});
+        usersModel.find({isDeleted: false})
+                  .limit(limit)
+                  .select('id name email age')
+                  .skip((page-1)*limit)
+                 
+                  
+                  .exec().then((users: IUser[]) => {
+                 
+                    response.users = users;
+                     })
+                  //Count Total document in collection "Users"
+                  await usersModel.countDocuments().then((total:number)=> {
+                    response.totalpages = Math.ceil(total/limit);
+                    response.currentpage= page;
+                  })
+        return response
+        
+        
+              
+        
     
 
     } catch (error) {
@@ -35,18 +58,18 @@ export const getAllUsers = async (): Promise<any[] | undefined> => {
 };
 
 
-// TODO:
+
 // - Get User By ID
 
 
 
 export const getUsersByID = async (id:string): Promise<any | undefined> => {
    
-
+    let usersModel = userEntity();
     try {
         
         // Search user by id
-        return await usersModel.findById(id);
+        return await usersModel.findById(id).select("id email name age");
 
     } catch (error) {
         LogError(`[ORM ERROR]: Getting User by ID: ${error}`);
@@ -59,7 +82,7 @@ export const getUsersByID = async (id:string): Promise<any | undefined> => {
 // - Delete User By ID
 export const deleteUserByID =async (id:string): Promise<any | undefined> => {  
    
-
+    let usersModel = userEntity();
     try {    
             return await usersModel.deleteOne({ _id: id });
 
@@ -72,7 +95,7 @@ export const deleteUserByID =async (id:string): Promise<any | undefined> => {
 
 export const createUser =async (user:any): Promise<any | undefined> => {
    
-
+    let usersModel = userEntity();
     try{
         //create inser new user
         return await usersModel.create(user);
@@ -87,7 +110,7 @@ export const createUser =async (user:any): Promise<any | undefined> => {
 
 export const updateUserById = async (id:string ,user:any ) : Promise<any | undefined> => {
     
-
+    let usersModel = userEntity();
     try{
         //update user
         return await usersModel.findByIdAndUpdate(id, user);
@@ -99,6 +122,7 @@ export const updateUserById = async (id:string ,user:any ) : Promise<any | undef
 // Login User
 
 export const LoginUser = async (auth: IAuth): Promise<any | undefined> => {
+    let usersModel = userEntity();
     try {
         
         let userModel = userEntity();
@@ -139,6 +163,7 @@ export const LoginUser = async (auth: IAuth): Promise<any | undefined> => {
 
 // Register User
 export const registerUser = async (user: IUser) : Promise<any | undefined> => {
+    let usersModel = userEntity();
     try{
         //create inser new user
         return await usersModel.create(user);

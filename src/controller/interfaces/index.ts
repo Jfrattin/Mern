@@ -7,7 +7,7 @@ export interface IHelloController {
 
 export interface IUserController{
     //Leer todos los usuarios de la base de datos si tengo o no id 
-    getUsers(id?: string): Promise<any>
+    getUsers(page?:number , limit?: number, id?: string): Promise<any>
     //Delete user by ID
     deleteUser(id?: string): Promise<any>
     //Update user   
