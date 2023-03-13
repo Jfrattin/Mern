@@ -4,7 +4,7 @@ import { LogSuccess, LogError, LogWarning } from "../../utils/logger";
 import { IUser } from "../../domain/interfaces/IUser.interfaces"; 
 import { IAuth } from "../../domain/interfaces/IAuth.interfaces";
 //import ORM
-import { registerUser, LoginUser, logoutUser, getUsersByID,getAllUsers} from "../../domain/orm/User.orm";
+import { registerUser, LoginUser, logoutUser, getUsersByID} from "../../domain/orm/User.orm";
 import { AuthResponse, ErrorResponse } from "./index";
 
 

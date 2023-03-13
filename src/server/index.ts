@@ -13,7 +13,6 @@ import helmet from "helmet";
 //Root Router 
 import rootRuter from "../routes";
 
-
 //configuration env
 dotenv.config();
 
@@ -24,8 +23,7 @@ const server: Express = express();
 //From  this point onover: http://localhost:8000/api/...
 
 server.use(
-        '/api',
-        rootRuter
+        '/api',rootRuter
 );
 
 //Static Server

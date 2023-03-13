@@ -8,8 +8,10 @@ import { IAuth } from "../interfaces/IAuth.interfaces";
 import bcrypt from 'bcrypt';
 //import .env
 import dotenv from 'dotenv';
+import { KataEntity } from "../entities/Kata.entity";
+import { IKata } from "../interfaces/Ikatas.interfaces";
 //import { UsersResponse } from "../types/userResponse";
-
+import mongoose from "mongoose";
 // CRUD
 
 /**
@@ -25,14 +27,14 @@ const  secret = process.env.SECRETKEY || 'MYSECRETKEY';
 
 export const getAllUsers = async (page:number, limit:number): Promise<any[] | undefined> => {
     try {   
-        let usersModel = userEntity();
+        const usersModel = userEntity();
         
         let response: any = {} ;
        
         // Search all users
         usersModel.find({isDeleted: false})
                   .limit(limit)
-                  .select('id name email age')
+                  .select('id name email age katas')
                   .skip((page-1)*limit)
                  
                   
@@ -61,6 +63,47 @@ export const getAllUsers = async (page:number, limit:number): Promise<any[] | un
 
 // - Get User By ID
 
+export const getKatasFromUser = async (page: number, limit: number, id:string ): Promise<any[] | undefined> => {
+    try {
+        let userModel = userEntity();
+        let katasModel = KataEntity();
+
+        let katasFound: IKata[] = [];
+
+        let response: any = {
+            katas: []
+        };
+
+        console.log('User ID', id);
+
+        await userModel.findById(id).then(async (user: IUser) => {
+            response.user = user.email;
+            
+             console.log('Katas from User', user.katas);
+
+            // Create types to search
+            let objectIds:mongoose.Types.ObjectId[]  = [];
+            user.katas.forEach((kataID: string) => {
+                let objectID = new mongoose.Types.ObjectId(kataID);
+                objectIds.push(objectID);
+            });
+
+            await katasModel.find({"_id": {"$in": objectIds }}).then((katas: IKata[]) => {
+                katasFound = katas;
+            });
+
+        }).catch((error) => {
+            LogError(`[ORM ERROR]: Obtaining User: ${error}`);
+        })
+
+        response.katas = katasFound;
+
+        return response;
+
+    } catch (error) {
+        LogError(`[ORM ERROR]: Getting All Users: ${error}`);
+    }
+}
 
 
 export const getUsersByID = async (id:string): Promise<any | undefined> => {
@@ -91,21 +134,7 @@ export const deleteUserByID =async (id:string): Promise<any | undefined> => {
     }
     
 }
-// - Create New User
 
-export const createUser =async (user:any): Promise<any | undefined> => {
-   
-    let usersModel = userEntity();
-    try{
-        //create inser new user
-        return await usersModel.create(user);
-    }catch(error){
-        LogError(`[ORM ERROR]: Creating User: ${error}`);
-    }
-
-
-    
-}
 // - Update User By ID
 
 export const updateUserById = async (id:string ,user:any ) : Promise<any | undefined> => {
@@ -177,4 +206,5 @@ export const registerUser = async (user: IUser) : Promise<any | undefined> => {
 //Logout User
 export const logoutUser = async (user:IUser ) : Promise<any | undefined> => {
 }
+
 

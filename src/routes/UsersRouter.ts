@@ -1,6 +1,6 @@
 import { UserController } from "../controller/types/UsersController"
 import express, { Request, Response } from "express";
-
+import { verifyToken } from "../middlewares/verify.middlewares";
 import { LogInfo } from "../utils/logger";
 
 
@@ -59,6 +59,27 @@ usersRouter.route('/')
         return res.status(200).send(response);
 
     })
+
+
+    usersRouter.route('/katas')
+    .get(verifyToken, async (req: Request, res: Response) => {
+        // Obtain a Query Param (ID)
+        let id: any = req?.query?.id;
+
+        // Pagination
+        let page: any = req?.query?.page || 1;
+        let limit: any = req?.query?.limit || 10;
+
+        // Controller Instance to excute method
+        const controller: UserController = new UserController();
+        // Obtain Reponse
+        const response: any = await controller.getKatas(page, limit, id)
+        // Send to the client the response
+        return res.status(200).send(response);
+
+    });
+
+
 
     export default usersRouter
 

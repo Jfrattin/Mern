@@ -4,7 +4,7 @@ import { LogSuccess, LogError } from "../../utils/logger";
 
 //ORM - Users 
 
-import { getAllUsers, getUsersByID, deleteUserByID, createUser, updateUserById} from "../../domain/orm/User.orm";
+import { getUsersByID, deleteUserByID, updateUserById,getAllUsers,getKatasFromUser } from "../../domain/orm/User.orm";
 
 
 @Route("/api/users")
@@ -12,7 +12,7 @@ import { getAllUsers, getUsersByID, deleteUserByID, createUser, updateUserById} 
 
 
 export class UserController implements IUserController {
-   
+
   /**
      * endpoint para obtener los users de la coleccion de la base de datos 
      * 
@@ -79,8 +79,29 @@ export class UserController implements IUserController {
       return response
       
     }
-  
+  @Get("/katas") //Users/katas
+  public async  getKatas( @Query()page:number , @Query()limit: number,@Query() id: string): Promise<any> {
+    let response: any = '';
+    //si existe el ID como @query devuelvo solo ese user
+    if(id){
+      LogSuccess( `[api/users] Get katas from User by ID: ${id} ` );
+      response = await getKatasFromUser( page,limit,id);  
+      }else{
+      LogSuccess('[api/users] Error');
+      response = {message: 'ID from user is needeed'};  
+    
+    }
+    return response;
+   
 
+    //Las katas de este Usuario
+   
+    
+    
+    
+    return response;
+    }
+     
 
 }
 
