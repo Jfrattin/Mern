@@ -12,19 +12,16 @@ import { KataEntity } from "../entities/Kata.entity";
 import { IKata } from "../interfaces/Ikatas.interfaces";
 //import { UsersResponse } from "../types/userResponse";
 import mongoose from "mongoose";
-// CRUD
 
 /**
  * Method to obtain all Users from Collection "Users" in Mongo Server
  */
-//initial  User models
-
 
 //Configuration  of env
 dotenv.config();
 //Obtain Secret key to generate JWT
 const  secret = process.env.SECRETKEY || 'MYSECRETKEY';
-
+// Get All Katas
 export const getAllUsers = async (page:number, limit:number): Promise<any[] | undefined> => {
     try {   
         const usersModel = userEntity();
@@ -58,11 +55,7 @@ export const getAllUsers = async (page:number, limit:number): Promise<any[] | un
         LogError(`[ORM ERROR]: Getting All Users 1: ${error}`);
     }
 };
-
-
-
-// - Get User By ID
-
+// - Get Katas From User
 export const getKatasFromUser = async (page: number, limit: number, id:string ): Promise<any[] | undefined> => {
     try {
         let userModel = userEntity();
@@ -104,8 +97,7 @@ export const getKatasFromUser = async (page: number, limit: number, id:string ):
         LogError(`[ORM ERROR]: Getting All Users: ${error}`);
     }
 }
-
-
+// - Get User By ID
 export const getUsersByID = async (id:string): Promise<any | undefined> => {
    
     let usersModel = userEntity();
@@ -118,10 +110,6 @@ export const getUsersByID = async (id:string): Promise<any | undefined> => {
         LogError(`[ORM ERROR]: Getting User by ID: ${error}`);
     }
 }
-
-// - Get User By Email
-
-
 // - Delete User By ID
 export const deleteUserByID =async (id:string): Promise<any | undefined> => {  
    
@@ -134,9 +122,7 @@ export const deleteUserByID =async (id:string): Promise<any | undefined> => {
     }
     
 }
-
 // - Update User By ID
-
 export const updateUserById = async (id:string ,user:any ) : Promise<any | undefined> => {
     
     let usersModel = userEntity();
@@ -149,7 +135,6 @@ export const updateUserById = async (id:string ,user:any ) : Promise<any | undef
     }
 }
 // Login User
-
 export const LoginUser = async (auth: IAuth): Promise<any | undefined> => {
     let usersModel = userEntity();
     try {
@@ -189,7 +174,6 @@ export const LoginUser = async (auth: IAuth): Promise<any | undefined> => {
         LogError(`[ORM ERROR]: Creating User: ${error}`);
     }
 }
-
 // Register User
 export const registerUser = async (user: IUser) : Promise<any | undefined> => {
     let usersModel = userEntity();
@@ -202,9 +186,42 @@ export const registerUser = async (user: IUser) : Promise<any | undefined> => {
 
 
 }
-
 //Logout User
 export const logoutUser = async (user:IUser ) : Promise<any | undefined> => {
 }
 
+// Create Kata By User
+export const createKata = async(kata: IKata): Promise<any | undefined> => {
+    
+    const kataModel =  KataEntity();
+
+    let userModel = userEntity();
+
+
+    try{
+        //create  new Kata
+        let  katanew : IKata; 
+        let userupdate : any;
+        let idkata;
+        //Create User
+        if(kata){
+            //Add kata
+            console.log (await kataModel.insertMany(kata));
+            //Search user creator
+            userupdate = await userModel.findById(kata.creator);
+            //busco el id de la ultima cata 
+            idkata = await kataModel.findOne({}, { _id: 1 }, { sort: { _id: -1 }, limit: 1 });
+            console.log(idkata.id)
+            console.log(userupdate);
+            userupdate.katas.push(idkata.id);
+            if(await userModel.findByIdAndUpdate(kata.creator,userupdate)){
+                console.log("modelo actualizado")
+            };
+              }
+        else{ console.log("error")}
+
+    }catch(error){
+        LogError(`[ORM ERROR]: Creating Kata: ${error}`);
+    }      
+}
 

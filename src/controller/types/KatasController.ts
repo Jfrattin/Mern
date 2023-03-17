@@ -16,7 +16,7 @@ export class KatasController implements IKatacontroller{
    * @returns All katas o kata found by ID
    */
    @Get("/")
-   public async getKatas(@Query()page: number, @Query()limit: number, @Query()id?: string): Promise<any> {
+   public async getKatas(@Query()page: number, @Query()limit: number, @Query()id?: string, @Query()atribute?: string): Promise<any> {
        
        let response: any = '';
        
@@ -25,7 +25,7 @@ export class KatasController implements IKatacontroller{
            response = await getKataByID(id);
        }else {
            LogSuccess('[/api/katas] Get All Katas Request')
-           response = await getAllKatas(page, limit);
+           response = await getAllKatas(page, limit,atribute);
        }
        
        return response;
@@ -54,11 +54,13 @@ export class KatasController implements IKatacontroller{
    }
 
   /**
+   * 
    * Endpoint to delete the Katas in the Collection "Katas" of DB 
    * @param {string} id Id of Kata to delete (optional)
    * @returns message informing if deletion was correct
    */
-   @Delete("/")
+  
+  @Delete("/")
    public async deleteKata(@Query()id?: string): Promise<any> {
        
        let response: any = '';

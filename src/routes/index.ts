@@ -32,10 +32,12 @@ server.use('/', rootRouter); // http://localhost:8000/api/
 server.use('/hello', helloRouter); // http://localhost:8000/api/hello --> HelloRouter
 // Add more routes to the app
 server.use('/users', usersRouter); // http://localhost:8000/api/users --> UsersRouter
-
 //Auth  router http://localhost:8000/api/users --> authRouter
 server.use('/auth', authRouter);
 //Kata Router http://localhost:8000/api/katas --> KatasRouther
 server.use('/katas', katasRouter);
 
 export default server;
+
+
+ 

@@ -9,6 +9,7 @@ import { IKata } from "../domain/interfaces/Ikatas.interfaces";
 import { KatasController } from "../controller/types/KatasController";
 //import body parser  (Read json body in request)
 import bodyParser from "body-parser";
+import { ObjectId } from "mongoose";
 
 
 
@@ -32,12 +33,13 @@ katasRouter.route('/')
         //Pagination Query Param
         let  page: any = req?.query?.page || 1;
         let  limit: any = req?.query?.limit || 5;
+        let atribute: any =req?.query?.atribute;
 
         LogInfo(`Query Param: ${id}`);
         // Controller Instance to excute method
         const controller: KatasController = new  KatasController();
         // Obtain Reponse
-        const response: any = await controller.getKatas(page,limit,id);
+        const response: any = await controller.getKatas(page,limit,id,atribute);
         // Send to the client the response
         return res.status(200).send(response);
     })
@@ -112,7 +114,7 @@ katasRouter.route('/')
         let level: Katalevel = req?.body?.level|| Katalevel.BASIC;
         let intents:number = req?.body?.intents || 1;
         let stars: number = req?.body?.stars|| 1;
-        let creator: string = req?.body?.creator || 'default Creator';
+        let creator: string= req?.body?.creator || 'default Creator';
         let solution: string = req?.body?.solution || 'Default Solution';
         let participants: string[] = req?.body.participants || [];
         
