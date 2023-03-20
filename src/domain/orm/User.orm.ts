@@ -248,5 +248,66 @@ export const valuekata = async(idkata: string, value: number): Promise<any | und
         LogError(`[ORM ERROR]: Creating Kata: ${error}`);
     }      
 }
-
-
+//  delete kata 
+export const deleteKata = async(idkata: string, iduser: string,): Promise<any | undefined> => {
+    
+    const kataModel =  KataEntity();
+    try{
+        let kataupdate :any;
+        //search and update kata
+        if(idkata&&iduser){
+            //Search kata user creator
+            kataupdate= await kataModel.findById(idkata);
+            if(kataupdate.creator==iduser)
+                {
+                    await kataModel.findByIdAndDelete(idkata)
+                    LogSuccess(`[ORM SUCCESS]: Kata ${idkata} deleted completed `)
+                }
+                console.log("Kata deleted")
+            } 
+        else{'[ORM ERROR]: Insert IDkata and IDuser'}
+        }catch(error){
+        LogError(`[ORM ERROR]: Creating Kata: ${error}`);
+        }}
+/// edit kata
+export const editKata= async( kataedit: IKata ,idkata: string, iduser: string): Promise<any | undefined> => {
+    
+            const kataModel =  KataEntity();
+            try{
+                let kataupdate :any;
+                //search and update kata
+                if(idkata&&iduser){
+                    //Search kata user creator
+                    kataupdate= await kataModel.findById(idkata);
+                    if(kataupdate.creator==iduser)
+                        {
+                            await kataModel.findByIdAndUpdate(idkata,kataedit)
+                            LogSuccess(`[ORM SUCCESS]: Kata ${idkata} deleted completed `)
+                        }
+                        console.log("Kata deleted")
+                    } 
+                else{'[ORM ERROR]: Insert IDkata and IDuser'}
+                }catch(error){
+                LogError(`[ORM ERROR]: Creating Kata: ${error}`);
+                }}
+//Solvekata
+export const solveKata= async( solutionkata: string ,idkata: string, iduser: string): Promise<any | undefined> => {
+    
+    const kataModel =  KataEntity();
+    try{
+        let kataupdate :any;
+        //search and update kata
+        if(idkata&&iduser&&solutionkata){
+            //Search kata
+            kataupdate = await kataModel.findById(idkata);
+            kataupdate.solution=solutionkata
+            kataupdate.participants.push(iduser);        
+            await kataModel.findByIdAndUpdate(idkata,kataupdate)
+                    LogSuccess(`[ORM SUCCESS]: Kata  solution ${kataupdate.name} completed `)
+                
+                console.log("Kata completed")
+            } 
+        else{'[ORM ERROR]: Insert IDkata and IDuser'}
+        }catch(error){
+        LogError(`[ORM ERROR]: Creating Kata: ${error}`);
+        }}
