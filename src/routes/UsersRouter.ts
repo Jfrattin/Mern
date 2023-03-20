@@ -41,7 +41,7 @@ usersRouter.route('/')
         // Send to the client the response
         return res.status(200).send(response);
     })
-
+    //delete user
     .delete(verifyToken,async (req: Request, res: Response) => {
         // Obtain a Query Param
         let id: any = req?.query?.id;
@@ -53,7 +53,7 @@ usersRouter.route('/')
         return res.status(204).send(response);
 
     })
-    
+    //create user
     .put(verifyToken, async (req: Request, res: Response) => {
         // Obtain a Query Param
         let id: any = req?.query?.id;
@@ -74,7 +74,7 @@ usersRouter.route('/')
         return res.status(200).send(response);
 
     })
-
+    //create kata
     .post(verifyToken,jsonParser,async (req: Request, res: Response) => {
         //Obain ID for Querry
         let id: string = req?.body?.id || "Error" ;
@@ -117,7 +117,67 @@ usersRouter.route('/')
        }
    
    })
-        
+   
+   //value katas
+   usersRouter.route('/value')
+   .post(verifyToken,jsonParser, async (req: Request, res: Response) => {
+       // Obtain a Query Param (ID)
+       let id: any = req?.body?.id;
+       let value: any = req?.body?.value;
+
+       // Controller Instance to excute method
+       const controller: UserController = new UserController();
+       // Obtain Reponse
+       const response: any = await controller.valuekatas( id, value )
+       // Send to the client the response
+       return res.status(200).send(response);
+
+   });
+   //Edit Kata
+   usersRouter.route('/katas')
+    .put(verifyToken,jsonParser,async (req: Request, res: Response) => {
+       //Obain IDkata for body
+       let iduser: string = req?.body?.iduser ||"Error";
+       let idkata: string = req?.body?.idkata || "Error" ;
+       // Obtain a body Params
+       let name: string = req?.body?.name || '';
+       let description: string = req?.body?.description|| '';
+       let level: Katalevel = req?.body?.level|| Katalevel.BASIC;
+       let intents:number = req?.body?.intents || 1;
+       let stars: number = req?.body?.stars|| 1;
+       let solution: string = req?.body?.solution || 'Default Solution';
+       let participants: string[] = req?.body.participants || [];
+      
+      let sentkata:IKata = {
+          name: name,
+          description: description,
+          level:level,
+          intents:intents,
+          stars:stars,
+          creator:iduser,
+          solution:solution,
+          participants:participants,
+             } 
+      //console.log("kata:", sentkata) 
+
+      if(name && description && level && intents>=0 && stars>=0 && iduser && idkata && solution && participants.length>=0){
+         //controler instances to excute method
+         const controller: UserController = new  UserController(); 
+
+          //Creating katas default
+          
+          // Obtain Reponse
+          const response: any = await controller.editkata(sentkata,idkata,iduser)
+          return res.status(201).send(response);
+          }    
+          
+          else{
+          return res.status(400).send({
+              message:'[ERROR] Creating Kata. You need  to send all atributes of katas to create it'
+          })
+      }
+  
+     })    
     usersRouter.route('/katas')
     .get(verifyToken, async (req: Request, res: Response) => {
         // Obtain a Query Param (ID)
@@ -135,23 +195,7 @@ usersRouter.route('/')
         return res.status(200).send(response);
 
     });
-
-
-    usersRouter.route('/value')
-    .post(verifyToken,jsonParser, async (req: Request, res: Response) => {
-        // Obtain a Query Param (ID)
-        let id: any = req?.body?.id;
-        let value: any = req?.body?.value;
-
-        // Controller Instance to excute method
-        const controller: UserController = new UserController();
-        // Obtain Reponse
-        const response: any = await controller.valuekatas( id, value )
-        // Send to the client the response
-        return res.status(200).send(response);
-
-    });
-    
+  
     usersRouter.route('/katas')
     .delete(verifyToken,jsonParser, async (req: Request, res: Response) => {
         // Obtain a Query Param (ID)
@@ -166,7 +210,7 @@ usersRouter.route('/')
 
     });
 
-    usersRouter.route('/katas')
+    usersRouter.route('/solvekata')
     .put(verifyToken,jsonParser, async (req: Request, res: Response) => {
         // Obtain a bodyParam (ID)
         let textkata: string= req?.body?.textkata;
@@ -181,50 +225,9 @@ usersRouter.route('/')
 
     });
 
-    usersRouter.route('/katas')
-    .post(verifyToken,jsonParser,async (req: Request, res: Response) => {
-        //Obain IDkata for body
-        let iduser: string = req?.body?.iduser ||"Error";
-        let idkata: string = req?.body?.idkata || "Error" ;
-        // Obtain a body Params
-        let name: string = req?.body?.name || '';
-        let description: string = req?.body?.description|| '';
-        let level: Katalevel = req?.body?.level|| Katalevel.BASIC;
-        let intents:number = req?.body?.intents || 1;
-        let stars: number = req?.body?.stars|| 1;
-        let solution: string = req?.body?.solution || 'Default Solution';
-        let participants: string[] = req?.body.participants || [];
-       
-       let sentkata:IKata = {
-           name: name,
-           description: description,
-           level:level,
-           intents:intents,
-           stars:stars,
-           creator:iduser,
-           solution:solution,
-           participants:participants,
-              } 
-       //console.log("kata:", sentkata) 
+  
 
-       if(name && description && level && intents>=0 && stars>=0 && iduser && idkata && solution && participants.length>=0){
-          //controler instances to excute method
-          const controller: UserController = new  UserController(); 
-
-           //Creating katas default
-           
-           // Obtain Reponse
-           const response: any = await controller.editkata(sentkata,idkata,iduser)
-           return res.status(201).send(response);
-           }    
-           
-           else{
-           return res.status(400).send({
-               message:'[ERROR] Creating Kata. You need  to send all atributes of katas to create it'
-           })
-       }
    
-   })
 
     export default usersRouter
 
