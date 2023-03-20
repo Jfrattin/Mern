@@ -136,5 +136,21 @@ usersRouter.route('/')
 
     });
 
+
+    usersRouter.route('/value')
+    .post(verifyToken,jsonParser, async (req: Request, res: Response) => {
+        // Obtain a Query Param (ID)
+        let id: any = req?.body?.id;
+        let value: any = req?.body?.value;
+
+        // Controller Instance to excute method
+        const controller: UserController = new UserController();
+        // Obtain Reponse
+        const response: any = await controller.valuekatas({ id, value })
+        // Send to the client the response
+        return res.status(200).send(response);
+
+    });
+
     export default usersRouter
 

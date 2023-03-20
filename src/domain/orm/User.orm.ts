@@ -225,3 +225,28 @@ export const createKata = async(kata: IKata): Promise<any | undefined> => {
     }      
 }
 
+//  Value Kata By User
+export const valuekata = async(idkata: string, value: number): Promise<any | undefined> => {
+    
+    const kataModel =  KataEntity();
+    try{
+        let kataupdate :any;
+        //search and update kata
+        if(idkata&&value){
+            //Search kata user creator
+            kataupdate= await kataModel.findById(idkata);
+            //average
+            kataupdate.stars= ((kataupdate.stars+value)/2.0)
+            console.log(kataupdate.name, kataupdate.stars);
+            if(await kataModel.findByIdAndUpdate(idkata,kataupdate)){
+                console.log("modelo actualizado")
+            };
+              }
+        else{ console.log("error")}
+
+    }catch(error){
+        LogError(`[ORM ERROR]: Creating Kata: ${error}`);
+    }      
+}
+
+

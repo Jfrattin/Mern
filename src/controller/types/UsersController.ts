@@ -5,7 +5,7 @@ import { LogSuccess, LogError, LogWarning } from "../../utils/logger";
 import { IKata } from "../../domain/interfaces/Ikatas.interfaces";
 //ORM - Users 
 
-import { getUsersByID, deleteUserByID, updateUserById,getAllUsers,getKatasFromUser,createKata } from "../../domain/orm/User.orm";
+import { getUsersByID, deleteUserByID, updateUserById,getAllUsers,getKatasFromUser,createKata,valuekata } from "../../domain/orm/User.orm";
 import { IUser } from "@/domain/interfaces/IUser.interfaces";
 
 
@@ -97,6 +97,8 @@ export class UserController implements IUserController {
     
     return response;
     }
+
+
   @Post("/") //Users
     public async createKata(kata: IKata): Promise<any> {
     let response: any = '';
@@ -118,6 +120,26 @@ export class UserController implements IUserController {
     return response;
 }
   
+@Post("/value") //Users
+public async valuekatas({ id, value }: { id: string; value: number; }): Promise<any> {
+let response: any = '';
+if(id&&value){
+  LogSuccess(`[/api/katas] Value Kata: ${id} `);
+  await valuekata(id,value).then((r) => {
+      LogSuccess(`[/api/katas] Value Kata: ${id} `);
+      response = {
+          message: `Kata value successfully: ${id}`
+      }
+  });
+    
+}else {
+    LogWarning('[/api/katas] Register needs Kata Entity')
+    response = {
+        message: 'Kata not Registered: Please, provide a Kata Entity to create one'
+    }
+}
+return response;
+}
 
 }
 
