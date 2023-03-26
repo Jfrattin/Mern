@@ -70,7 +70,7 @@ authRouter.route('/login')
        // Obtain Reponse
        const response: any = await controller.LoginUser(auth);  
         // Send to the client the response
-        return res.status(201).send(response);    
+        return res.status(200).send(response);    
     }
     else{ 
         return res.status(400).send(`[ERROR] User  data missing: Can user Loggin `)}

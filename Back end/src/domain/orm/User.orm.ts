@@ -142,7 +142,7 @@ export const LoginUser = async (auth: IAuth): Promise<any | undefined> => {
         let userModel = userEntity();
 
         let userFound: IUser | undefined = undefined;
-        let token = "0";
+        let token = "";
 
         // Check if user exists by Unique Email
         await userModel.findOne({email: auth.email}).then((user: IUser) => {
@@ -171,7 +171,11 @@ export const LoginUser = async (auth: IAuth): Promise<any | undefined> => {
          
 
     } catch (error) {
-        LogError(`[ORM ERROR]: Creating User: ${error}`);
+        LogError(`[ORM ERROR]: Login User: ${error}`);
+        return {
+            token: '',
+            user: 'User not found'
+        }
     }
 }
 // Register User

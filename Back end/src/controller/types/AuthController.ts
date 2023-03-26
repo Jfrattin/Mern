@@ -32,9 +32,9 @@ export class AuthController implements IAuthcontroller{
      }
 
      @Post("/login")
-     public async LoginUser(auth: IAuth): Promise<any> {
+     public async LoginUser(auth: any): Promise<any> {
  
-         let response: AuthResponse | ErrorResponse | undefined;
+         let response: AuthResponse ;
  
          if(auth){
              LogSuccess(`[/api/auth/register] Login with User: ${auth.email} `);
